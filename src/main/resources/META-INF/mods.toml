@@ -8,9 +8,9 @@ modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the minecraft version (without the 1.)
 loaderVersion="[38,)" #mandatory
 # A text field displayed in the mod UI
-credits="cpw" #optional
+credits="cpw,hexxone" #optional
 # A text field displayed in the mod UI
-authors="cpw" #optional
+authors="cpw,hexxone" #optional
 license="GPLv3"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -19,10 +19,10 @@ license="GPLv3"
     # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
     version="${file.jarVersion}" #mandatory
      # A display name for the mod
-    displayName="Simple Inventory Sorter" #mandatory
+    displayName="ACTUAL Simple Inventory Sorter Client" #mandatory
     # The description text for the mod (multi line!) (#mandatory)
     description='''
-Simple inventory sorting.
+ACTUAL Simple inventory sorting Client.
 
 Middle click to sort your inventory.
 Scroll wheel on a stack to move in and out.

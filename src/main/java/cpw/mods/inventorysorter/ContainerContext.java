@@ -1,6 +1,8 @@
 package cpw.mods.inventorysorter;
 
 import com.google.common.collect.*;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import org.apache.logging.log4j.*;
@@ -15,7 +17,9 @@ class ContainerContext
 {
     final Slot slot;
     final InventoryHandler.InventoryMapping slotMapping;
-    final ServerPlayer player;
+    //final ServerPlayer player;
+    final AbstractContainerScreen acs;
+
     final ImmutableBiMap<Container, InventoryHandler.InventoryMapping> mapping;
     private InventoryHandler.InventoryMapping slotTarget;
 
@@ -30,12 +34,15 @@ class ContainerContext
                 && !InventorySorter.INSTANCE.slotblacklist.contains(slot.getClass().getName());
     }
 
-    public ContainerContext(Slot slot, ServerPlayer playerEntity)
+    public ContainerContext(Slot slot, LocalPlayer playerEntity, AbstractContainerScreen acs)
     {
         this.slot = slot;
-        this.player = playerEntity;
+        //this.player = playerEntity;
+        this.acs = acs;
+
         Map<Container, InventoryHandler.InventoryMapping> mapping = new HashMap<>();
-        final AbstractContainerMenu openContainer = playerEntity.containerMenu;
+
+        final AbstractContainerMenu openContainer = acs.getMenu();
         openContainer.slots.stream().filter(ContainerContext::validSlot).forEach(sl->
         {
             final InventoryHandler.InventoryMapping inventoryMapping = mapping.computeIfAbsent(sl.container, k -> new InventoryHandler.InventoryMapping(sl.container, openContainer, sl.container, sl.getClass()));
@@ -45,6 +52,7 @@ class ContainerContext
                 slotTarget = inventoryMapping;
             }
         });
+
 
         if (mapping.containsKey(playerEntity.getInventory())) {
             final InventoryHandler.InventoryMapping playerMapping = mapping.remove(playerEntity.getInventory());
@@ -56,7 +64,9 @@ class ContainerContext
             InventoryHandler.InventoryMapping hotbarMapping = new InventoryHandler.InventoryMapping(PLAYER_HOTBAR, openContainer, playerEntity.getInventory(), Slot.class);
             InventoryHandler.InventoryMapping mainMapping = new InventoryHandler.InventoryMapping(PLAYER_MAIN, openContainer, playerEntity.getInventory(), Slot.class);
             InventoryHandler.InventoryMapping offhandMapping = new InventoryHandler.InventoryMapping(PLAYER_OFFHAND, openContainer, playerEntity.getInventory(), Slot.class);
+
             InventoryHandler.InventoryMapping inventoryMapping;
+
             for (int i = playerMapping.begin; i<=playerMapping.end; i++)
             {
                 Slot s = openContainer.getSlot(i);

@@ -18,11 +18,13 @@
 
 package cpw.mods.inventorysorter;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -107,6 +109,7 @@ public class KeyHandler
         }
         final Optional<Action> action = keyBindingMap.entrySet().stream().filter(e -> kbTest.test(e.getKey(), evt)).
                 map(Map.Entry::getValue).findFirst();
+
         if (!action.isPresent()) return;
 
         final Action triggeredAction = action.get();
@@ -115,7 +118,14 @@ public class KeyHandler
             if (guiContainer.getMenu() != null && guiContainer.getMenu().slots != null && guiContainer.getMenu().slots.contains(slot))
             {
                 InventorySorter.LOGGER.debug("Sending action {} slot {}", triggeredAction, slot.index);
-                Network.channel.sendToServer(triggeredAction.message(slot));
+
+                //Network.channel.sendToServer(triggeredAction.message(slot));
+                //Slot slot = sender.containerMenu.getSlot(message.slotIndex);
+                //message.action.execute(new ContainerContext(slot, sender));
+                var player = Minecraft.getInstance().player;
+
+                triggeredAction.execute(new ContainerContext(slot, player, guiContainer));
+
                 evt.setCanceled(true);
             }
         }

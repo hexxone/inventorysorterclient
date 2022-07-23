@@ -21,6 +21,7 @@ package cpw.mods.inventorysorter;
 import com.google.common.base.*;
 import com.google.common.collect.*;
 import com.google.common.primitives.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
@@ -77,11 +78,11 @@ public enum InventoryHandler
     {
         for (int i = targetLow; i < targetHigh; i++)
         {
-            if (!ctx.player.containerMenu.getSlot(i).mayPlace(is))
+            if (!ctx.acs.getMenu().getSlot(i).mayPlace(is))
             {
                 continue;
             }
-            if (mergeStack(ctx.player.containerMenu, is, i, i+1, slotIsDestination))
+            if (mergeStack(ctx.acs.getMenu(), is, i, i+1, slotIsDestination))
             {
                 break;
             }
@@ -104,8 +105,12 @@ public enum InventoryHandler
             if (inv == ctx.slotMapping.inv) continue;
             for (int i = ent.getValue().begin; i <= ent.getValue().end; i++)
             {
-                final Slot slot = ctx.player.containerMenu.getSlot(i);
-                if (!slot.mayPickup(ctx.player)) continue;
+                final Slot slot = ctx.acs.getMenu().getSlot(i);
+
+                var player = Minecraft.getInstance().player;
+
+                if (!slot.mayPickup(player)) continue;
+
                 ItemStack sis = slot.getItem();
                 if (sis != null && sis.getItem() == is.getItem() && ItemStack.tagMatches(sis, is))
                 {
@@ -136,8 +141,11 @@ public enum InventoryHandler
         SortedMultiset<ItemStackHolder> itemcounts = TreeMultiset.create(new ItemStackComparator());
         for (int i = slotLow; i < slotHigh; i++)
         {
-            final Slot slot = context.player.containerMenu.getSlot(i);
-            if (!slot.mayPickup(context.player)) continue;
+            var player = Minecraft.getInstance().player;
+
+            final Slot slot = context.acs.getMenu().getSlot(i);
+            if (!slot.mayPickup(player)) continue;
+
             ItemStack stack = slot.getItem();
             if (!stack.isEmpty())
             {

@@ -18,6 +18,7 @@
 
 package cpw.mods.inventorysorter;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.*;
@@ -69,7 +70,11 @@ public enum ScrollWheelHandler implements Consumer<ContainerContext>
 
         if (InventorySorter.INSTANCE.slotblacklist.contains(source.getClass().getName())) return; // Blacklist source
         if (InventorySorter.INSTANCE.slotblacklist.contains(context.slot.getClass().getName())) return; // Blacklist target
-        if (!source.mayPickup(context.player)) return;
+
+        var player = Minecraft.getInstance().player;
+
+        if (!source.mayPickup(player)) return;
+
         if (!source.mayPlace(is)) return;
         final ItemStack sourceStack = InventoryHandler.INSTANCE.getItemStack(source);
         if (sourceStack.isEmpty()) return; // emptystack detection
@@ -79,14 +84,14 @@ public enum ScrollWheelHandler implements Consumer<ContainerContext>
         final List<InventoryHandler.InventoryMapping> mappingCandidates = new ArrayList<>();
         if (moveAmount < 0)
         {
-            final InventoryHandler.InventoryMapping inventoryMapping = new InventoryHandler.InventoryMapping(context.slot.container, context.player.containerMenu, context.slot.container, context.slot.getClass());
+            final InventoryHandler.InventoryMapping inventoryMapping = new InventoryHandler.InventoryMapping(context.slot.container, player.containerMenu, context.slot.container, context.slot.getClass());
             mappingCandidates.add(inventoryMapping);
             inventoryMapping.begin = context.slot.index;
             inventoryMapping.end = context.slot.index;
         }
         else
         {
-            if (context.player.containerMenu == context.player.inventoryMenu)
+            if (context.acs.getMenu() == player.inventoryMenu)
             {
                 if (InventoryHandler.preferredOrders.containsKey(context.slotMapping.inv)) {
                     mappingCandidates.addAll(InventoryHandler.preferredOrders.get(context.slotMapping.inv).stream().map(mapping::get).collect(Collectors.toList()));
@@ -108,7 +113,7 @@ public enum ScrollWheelHandler implements Consumer<ContainerContext>
         {
             if (mappingCandidate.inv == ContainerContext.PLAYER_OFFHAND && moveAmount > 0) {
                 boolean empty = true;
-                for (ItemStack itemStack : context.player.getInventory().offhand)
+                for (ItemStack itemStack : player.getInventory().offhand)
                 {
                     if (!itemStack.isEmpty()) empty = false;
                 }
@@ -118,7 +123,7 @@ public enum ScrollWheelHandler implements Consumer<ContainerContext>
                 boolean hasTarget = false, found = false;
                 for (int i = 0; i < 9; i++)
                 {
-                    ItemStack itemStack = context.player.getInventory().items.get(i);
+                    ItemStack itemStack = player.getInventory().items.get(i);
                     if (ItemStack.isSame(itemStack,sourceStack) && itemStack.getCount() < itemStack.getMaxStackSize())
                     {
                         hasTarget = true;

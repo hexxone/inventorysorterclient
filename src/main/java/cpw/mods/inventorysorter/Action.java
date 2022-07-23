@@ -56,10 +56,10 @@ public enum Action
         return keyBindingName;
     }
 
-    public Network.ActionMessage message(Slot slot)
-    {
-        return new Network.ActionMessage(this, slot.index);
-    }
+    // public Network.ActionMessage message(Slot slot)
+    // {
+    //     return new Network.ActionMessage(this, slot.index);
+    // }
 
     public void execute(ContainerContext context)
     {

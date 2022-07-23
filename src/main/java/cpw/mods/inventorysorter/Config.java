@@ -22,14 +22,17 @@ public class Config {
     private Config(ForgeConfigSpec.Builder builder) {
         builder.comment("Inventory sorter blacklists");
         builder.push("blacklists");
+
         containerBlacklist = builder
                 .comment("Container blacklist")
                 .translation("inventorysorter.config.containerblacklist")
                 .defineList("containerBlacklist", ArrayList::new, t -> true);
+
         slotBlacklist = builder
                 .comment("Slot type blacklist")
                 .translation("inventorysorter.config.slotblacklist")
                 .defineList("slotBlacklist", new ArrayList<>(), t -> true);
+
         builder.pop();
     }
 }

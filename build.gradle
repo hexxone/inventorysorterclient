@@ -22,7 +22,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-group= 'cpw.mods'
+group= 'hexx.one'
 archivesBaseName = 'inventorysorter'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -99,7 +99,7 @@ curseforge {
         changelog = file('CHANGELOG.md')
         changelogType = 'markdown'
         releaseType = project.findProperty('releaseType') ?: 'alpha'
-        addGameVersion '1.18'
+        addGameVersion '1.18.2'
     }
     options {
         javaVersionAutoDetect = true // defaults to true
@@ -118,11 +118,11 @@ jar {
     manifest {
         attributes([
                 "Specification-Title": 'inventorysorter',
-                "Specification-Vendor": 'cpwmods',
+                "Specification-Vendor": 'hexx.one',
                 "Specification-Version": '1', // We are version 1 of ourselves
                 "Implementation-Title": project.name,
                 "Implementation-Version": "${version}",
-                "Implementation-Vendor" :'cpwmods',
+                "Implementation-Vendor" :'hexx.one',
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

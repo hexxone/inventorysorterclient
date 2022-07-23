@@ -20,6 +20,7 @@ package cpw.mods.inventorysorter;
 
 import com.google.common.base.*;
 import com.google.common.collect.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -110,14 +111,18 @@ public enum SortingHandler implements Consumer<ContainerContext>
                 }
             }
         }
+        var player = Minecraft.getInstance().player;
+
         for (int slot = context.slotMapping.begin; slot < context.slotMapping.end + 1; slot++)
         {
-            context.player.containerMenu.getSlot(slot).setChanged();
+            player.containerMenu.getSlot(slot).setChanged();
         }
     }
     private void compactInventory(final ContainerContext context, final Multiset<ItemStackHolder> itemcounts)
     {
-        final ResourceLocation containerTypeName = lookupContainerTypeName(context.player.inventoryMenu);
+        var player = Minecraft.getInstance().player;
+
+        final ResourceLocation containerTypeName = lookupContainerTypeName(player.inventoryMenu);
         InventorySorter.INSTANCE.lastContainerType = containerTypeName;
         if (InventorySorter.INSTANCE.containerblacklist.contains(containerTypeName)) {
             InventorySorter.INSTANCE.debugLog("Container {} blacklisted", ()->new String[] {containerTypeName.toString()});
@@ -142,8 +147,8 @@ public enum SortingHandler implements Consumer<ContainerContext>
         int itemCount = stackHolder != null ? stackHolder.getCount() : 0;
         for (int i = slotLow; i < slotHigh; i++)
         {
-            final Slot slot = context.player.containerMenu.getSlot(i);
-            if (!slot.mayPickup(context.player) && slot.hasItem()) {
+            final Slot slot = player.containerMenu.getSlot(i);
+            if (!slot.mayPickup(player) && slot.hasItem()) {
                 InventorySorter.LOGGER.log(Level.DEBUG, "Slot {} of container {} disallows canTakeStack", ()->slot.index, ()-> containerTypeName);
                 continue;
             }

@@ -25,10 +25,8 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.ChatFormatting;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
@@ -72,10 +70,12 @@ public class InventorySorter
     public InventorySorter() {
         INSTANCE = this;
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
         bus.addListener(this::preinit);
         bus.addListener(this::clientSetup);
         bus.addListener(this::handleimc);
         bus.addListener(this::onConfigLoad);
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SPEC);
         COMMAND_ARGUMENT_TYPES.register(bus);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
@@ -115,7 +115,7 @@ public class InventorySorter
     }
 
     private void preinit(FMLCommonSetupEvent evt) {
-        Network.init();
+        // Network.init();
     }
 
     private void onServerStarting(ServerStartingEvent evt) {
